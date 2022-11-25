@@ -15,13 +15,14 @@ export class UserDashboardComponent implements OnInit {
   userObj: _MUserDashboardModal = new _MUserDashboardModal();
   userForm: any = FormGroup;
   errorMsg: any = [];
-
+  finalResult: any;
 
   constructor(private fb:FormBuilder,private service:CommonServiceService,private router:Router) { }
 
   ngOnInit(): void {    
     this.userObj = new _MUserDashboardModal();
     this.buildForm();
+    this.finalResult;
   }
 
   buildForm() {
@@ -35,8 +36,8 @@ export class UserDashboardComponent implements OnInit {
     if ((this.userForm.value.formula.length) !== 0) {
       this.userObj.formula = this.userForm.value.formula;
       this.service.calculatewithoutStep(this.userObj).subscribe((response: any) => {
-          if (response.status_code == 200 && response.status == true ) {
-            
+          if (response.results.status_code == 200 && response.results.status == true ) {
+            this.finalResult= response.results.data;
 
           }
         },

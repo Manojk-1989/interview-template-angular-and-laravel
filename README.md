@@ -59,3 +59,8 @@
   - 100 * 50 + 300 - 5 * 10
   - 50 / 10 * 200 - 50 / 10
   - 0.4 + 0.2 - 0.3 + 0.2
+##
+admin email ;- admin@gmail.com
+admin password:- 123456
+
+use the interview.sql to import into database

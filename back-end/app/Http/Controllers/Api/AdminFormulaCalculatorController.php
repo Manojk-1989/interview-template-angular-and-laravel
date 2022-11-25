@@ -8,6 +8,10 @@ use App\Http\Middleware\AdminMiddleWare;
 use App\Models\User;
 use App\Traits\ApiResponse;
 use JWTAuth;
+use App\Traits\Bodmas;
+use App\Http\Requests\CalculationRequest;
+
+
 
 
 
@@ -15,12 +19,12 @@ use JWTAuth;
 
 class AdminFormulaCalculatorController extends Controller
 {
-//     public function __construct()
-//    {
-//        $this->middleware(AdminMiddleWare::class);
-//    }
+    public function __construct()
+   {
+       $this->middleware(AdminMiddleWare::class);
+   }
 
-   use ApiResponse;
+   use ApiResponse,Bodmas;
     /**
      * Display a listing of the resource.
      *
@@ -59,9 +63,28 @@ class AdminFormulaCalculatorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function calculateWithStep(CalculationRequest $request)
     {
-        //
+        try {
+            //code...
+            $user = JWTAuth::parseToken()->authenticate();
+        
+            // $str = "100*50+300-5";
+            $role = $user->role_id;
+            $result = $this->evaluate($request->formula);
+            $limit = count($result);
+       
+            foreach($result as $res => $key){
+                     "Step ".$res." :".$key."\n";
+                }
+
+            return $this->successResponse($result,'Data retrieved Succesfully.',200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->errorResponse('Something went wrong.',204);
+
+        }
+        
     }
 
     /**

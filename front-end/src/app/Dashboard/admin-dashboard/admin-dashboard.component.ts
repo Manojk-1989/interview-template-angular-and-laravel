@@ -17,10 +17,15 @@ export class AdminDashboardComponent implements OnInit {
   adminObj: _MAdminDashboardModal = new _MAdminDashboardModal();
   adminForm: any = FormGroup;
   errorMsg: any = [];
+  calculationWithSteps: any = [];
+  finalResult: any;
   constructor(private fb:FormBuilder,private service:CommonServiceService,private router:Router) { }
 
   ngOnInit(): void {    
     this.adminObj = new _MAdminDashboardModal();
+    this.buildForm();
+    this.calculationWithSteps;
+    this.finalResult;
   }
 
   buildForm() {
@@ -33,9 +38,13 @@ export class AdminDashboardComponent implements OnInit {
   calculatewithStep(){
     if ((this.adminForm.value.formula.length) !== 0) {
       this.adminObj.formula = this.adminForm.value.formula;
-      this.service.calculatewithStep(this.adminObj).subscribe((response: any) => {
-          if (response.status_code == 200 && response.status == true ) {
-            
+      this.service.calculatewithStep(this.adminObj).subscribe((response: any) => {console.log(response);
+          if (response.results.status_code == 200 && response.results.status == true ) {
+            this.calculationWithSteps = response.results.data;
+            console.log(this.calculationWithSteps);
+            this.finalResult = this.calculationWithSteps[this.calculationWithSteps.length-1];
+// console.log(last);
+
 
           }
         },

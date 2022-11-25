@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Http\Middleware\UserMiddleWare;
 use App\Traits\ApiResponse;
 use App\Traits\Bodmas;
+use JWTAuth;
+use App\Http\Requests\CalculationRequest;
+
 
 
 
@@ -23,25 +26,24 @@ class UserFormulaCalculatorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function calculateWithoutStep(Request $request)
+    public function calculateWithoutStep(CalculationRequest $request)
     {
-        $count = 0;
-    preg_match_all("/\([^\^(\)]*\)/", $request->formula, $matches);
-    foreach($matches[0] as $key=>$value){
-        $value = str_replace(["(",")"], ["",""], $value);
-        $eq = bodmas($value,$count,false);
-        $count++;
-        eval("\$result = $value;");
-        $request->formula = str_replace("($value)", $result, $request->formula);
-        $results[$i] = $eq;
-        $i++;
-    }
-    // return $this->errorResponse('Something went wrong.',204);
+        try {
+            //code...
+            $user = JWTAuth::parseToken()->authenticate();
+            // $str = "100*50+300-5";
+            $role = $user->role_id;
+            $result = $this->evaluate($request->formula);
+            $limit = count($result);
 
-    $results = $this->bodmas($request->formula,$count,true);
-    return $this->successResponse($results,'Data retrieved Succesfully.',200);
+            return $this->successResponse($result[$limit-1],'Data retrieved Succesfully.',200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->errorResponse('Something went wrong.',204);
 
-    // return ;
+        }
+        
+
         
     }
 

@@ -19,9 +19,10 @@ class AdminMiddleWare
     public function handle(Request $request, Closure $next)
     {
         $user = JWTAuth::parseToken()->authenticate();
-        if ($user->role_id != 2) {
+        if ($user->role_id == 2) {
+            return $next($request);
+        } else {
             return redirect('login');
         }
-        return $next($request);
     }
 }

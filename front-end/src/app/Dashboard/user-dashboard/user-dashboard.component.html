@@ -22,6 +22,9 @@
                 <span *ngIf="userForm.controls.formula.touched && userForm.controls.formula.invalid" class="alert text-danger">
                   Formula is required.
               </span>
+              <span *ngIf="errorMsg.formula" class="text-danger">{{
+                errorMsg.formula
+              }}</span>
               </div>
             </div>
             <br>
@@ -35,5 +38,10 @@
   
     </div>
     
+  </div>
+  <div class="container mt-5">
+   
+    <h2>Result</h2>
+   Result: {{finalResult}}
   </div>
   

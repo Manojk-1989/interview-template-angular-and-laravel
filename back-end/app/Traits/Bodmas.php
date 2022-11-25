@@ -11,6 +11,22 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 trait Bodmas{
 
+    protected function evaluate($str){
+        $count = 0;
+    preg_match_all("/\([^\^(\)]*\)/", $str, $matches);
+    foreach($matches[0] as $key=>$value){
+        $value = str_replace(["(",")"], ["",""], $value);
+        $eq = bodmas($value,$count,false);
+        $count++;
+        eval("\$result = $value;");
+        $str = str_replace("($value)", $result, $str);
+        $results[$i] = $eq;
+        $i++;
+    }
+    $results = $this->bodmas($str,$count,true);
+    return $results;
+    }
+
         protected function bodmas($eq,$count,$op){
                 $i = 0;
                 $results[$i] = $eq;
@@ -26,11 +42,21 @@ trait Bodmas{
                                $results[$i] = $eq;
                                $i++;
                             }
-                            singleton($eq,$count);
+                            $this->singleton($eq,$count);
                         }
                     }
                 }
             return $results;
         }
+
+        protected function singleton($str,$count){
+            preg_match_all("/\(\d+(\.\d+)?\)/", $str, $matches);
+            if(count($matches[0])){
+            foreach($matches[0] as $key=>$value){
+                $str = str_replace(["(",")"], ["",""], $str);
+            }
+            bodmas($str,$count,true);
+            }
+         }
 
 }
